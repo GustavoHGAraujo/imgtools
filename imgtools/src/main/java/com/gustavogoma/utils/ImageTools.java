@@ -8,7 +8,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -26,7 +25,58 @@ import static android.view.View.GONE;
  * @author Gustavo Araújo
  */
 
-public class ImageTools extends AsyncTask<Void, Void, Bitmap> {
+public class ImageTools extends Thread {
+
+    private String mImageUrl;
+    private OnSuccessListener mOnSuccessListener;
+    private OnFailedListener mOnFailedListener;
+
+    private ImageTools() {
+        this.mImageUrl = "";
+        this.mOnSuccessListener = new OnSuccessListener() {
+            @Override
+            public void onImageDownloaded(Bitmap bitmap) {
+            }
+        };
+        this.mOnFailedListener = new OnFailedListener() {
+            @Override
+            public void onImageDownloadFailed(Exception e) {
+            }
+        };
+    }
+
+    @Override
+    public void run() {
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(mImageUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            InputStream inputStream = connection.getInputStream();
+            bitmap = BitmapFactory.decodeStream(inputStream);
+        } catch (IOException e) {
+            this.mOnFailedListener.onImageDownloadFailed(e);
+        }
+
+        this.mOnSuccessListener.onImageDownloaded(bitmap);
+    }
+
+    public ImageTools onSuccess(@NonNull OnSuccessListener onSuccessListener) {
+        this.mOnSuccessListener = onSuccessListener;
+        return this;
+    }
+
+    public ImageTools onFailed(@NonNull OnFailedListener onFailedListener) {
+        this.mOnFailedListener = onFailedListener;
+        return this;
+    }
+
+    private interface OnSuccessListener {
+        void onImageDownloaded(Bitmap bitmap);
+    }
+
+    private interface OnFailedListener {
+        void onImageDownloadFailed(Exception e);
+    }
 
     /**
      * Decode the byte array to a Bitmap.
@@ -58,7 +108,7 @@ public class ImageTools extends AsyncTask<Void, Void, Bitmap> {
      */
     public static ImageTools download(@NonNull String imageUrl) {
         ImageTools imgTools = new ImageTools();
-        imgTools.imageUrl = imageUrl;
+        imgTools.mImageUrl = imageUrl;
 
         return imgTools;
     }
@@ -132,8 +182,8 @@ public class ImageTools extends AsyncTask<Void, Void, Bitmap> {
         final RectF rectF = new RectF(rect);
 
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                                            bitmap.getHeight(),
-                                            Bitmap.Config.ARGB_8888);
+                bitmap.getHeight(),
+                Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
         paint.setAntiAlias(true);
@@ -144,65 +194,5 @@ public class ImageTools extends AsyncTask<Void, Void, Bitmap> {
         canvas.drawBitmap(bitmap, rect, rect, paint);
 
         return output;
-    }
-
-    private String imageUrl;
-    private OnSuccessListener onSuccessListener;
-    private OnFailedListener onFailedListener;
-
-    private ImageTools() {
-        this.imageUrl = "";
-        this.onSuccessListener = new OnSuccessListener() {
-            @Override
-            public void onImageDownloaded(Bitmap bitmap) {
-            }
-        };
-        this.onFailedListener = new OnFailedListener() {
-            @Override
-            public void onImageDownloadFailed(Exception e) {
-            }
-        };
-    }
-
-    @Override
-    protected Bitmap doInBackground(Void... voids) {
-        if (imageUrl == null) return null;
-
-        Bitmap bitmap = null;
-        try {
-            URL url = new URL(imageUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            InputStream inputStream = connection.getInputStream();
-            bitmap = BitmapFactory.decodeStream(inputStream);
-        } catch (IOException e) {
-            this.onFailedListener.onImageDownloadFailed(e);
-        }
-
-        return bitmap;
-    }
-
-    @Override
-    protected void onPostExecute(Bitmap bmp) {
-        super.onPostExecute(bmp);
-
-        this.onSuccessListener.onImageDownloaded(bmp);
-    }
-
-    public ImageTools onSuccess(OnSuccessListener onSuccessListener) {
-        this.onSuccessListener = onSuccessListener;
-        return this;
-    }
-
-    public ImageTools onFailed(OnFailedListener onFailedListener) {
-        this.onFailedListener = onFailedListener;
-        return this;
-    }
-
-    private interface OnSuccessListener {
-        void onImageDownloaded(Bitmap bitmap);
-    }
-
-    private interface OnFailedListener {
-        void onImageDownloadFailed(Exception e);
     }
 }
