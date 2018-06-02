@@ -70,11 +70,11 @@ public class ImageTools extends Thread {
         return this;
     }
 
-    private interface OnSuccessListener {
+    public interface OnSuccessListener {
         void onImageDownloaded(Bitmap bitmap);
     }
 
-    private interface OnFailedListener {
+    public interface OnFailedListener {
         void onImageDownloadFailed(Exception e);
     }
 
