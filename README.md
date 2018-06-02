@@ -1,6 +1,7 @@
 # ImgTools
 
 Created by: [Gustavo Araújo](https://github.com/GustavoHGAraujo) (gustavo.hg.araujo@gmail.com)
+Contributor: [Daniel Gunna](https://github.com/DanielGunna)
 
 ## Features
 
@@ -12,12 +13,24 @@ This module has already implemented the functions and procedures related to imag
 
 ## How to use
 
-To import this module simply:
+On `build.gradle` at project level:
 
-1. Open the Android Studio
-2. On the menu `File`, select `New` then `Import module`
-3. In the `Source directory` find the `imgtools` directory and then click in `Finish`
-4. Add `compile project(path: ':imgtools')` to the `dependencies` section of the `build.gradle` of the module that will use ImgTools.
-5. Done. Now import the class into your Java classes.
+```
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+On `build.gradle` at module level:
+
+```
+dependencies {
+  compile 'com.github.GustavoHGAraujo:imgtools:v0.2'
+}
+```
 
 Because all the functions are static, to use them simply call using `com.gustavogoma.utils.imgtools.ImgTools.<method_name>`
