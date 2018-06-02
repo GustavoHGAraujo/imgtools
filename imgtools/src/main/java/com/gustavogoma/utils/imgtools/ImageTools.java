@@ -1,4 +1,4 @@
-package com.gustavogoma.utils;
+package com.gustavogoma.utils.imgtools;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
