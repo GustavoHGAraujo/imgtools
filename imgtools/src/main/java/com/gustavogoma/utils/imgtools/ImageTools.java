@@ -25,7 +25,7 @@ import static android.view.View.GONE;
  * @author Gustavo Araújo
  */
 
-public class ImageTools extends Thread {
+public class ImageTools extends Runnable {
 
     private String mImageUrl;
     private OnSuccessListener mOnSuccessListener;
