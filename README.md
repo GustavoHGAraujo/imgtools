@@ -1,5 +1,7 @@
 # ImgTools
 
+[![](https://jitpack.io/v/GustavoHGAraujo/imgTools.svg)](https://jitpack.io/#GustavoHGAraujo/imgTools)
+
 Created by: [Gustavo Araújo](https://github.com/GustavoHGAraujo) (gustavo.hg.araujo@gmail.com)
 Contributor: [Daniel Gunna](https://github.com/DanielGunna)
 
